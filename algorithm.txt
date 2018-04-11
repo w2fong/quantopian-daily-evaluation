@@ -1,0 +1,25 @@
+def initialize(context):
+    context.stock = sid(24) #apple
+    #context.stock = sid(8554) # spy 
+    #context.stock = sid(1091) # brk.A
+    set_benchmark(sid(1091)) #brk.A
+    schedule_function(trading_func, date_rules.every_day(), time_rules.market_open(hours=1))
+
+def trading_func(context, data):
+    #print "Opening position "
+    stock = context.stock
+    currentPrice = data.current(stock, 'price')
+    cash = context.portfolio.cash
+    number_of_shares = context.portfolio.positions[stock.sid].amount
+    netEquityWorth = number_of_shares * currentPrice
+    netWorth = cash + netEquityWorth
+    
+    if data.can_trade(stock):
+        print "Add trading algo here" 
+        # Handling empty hand
+        if (number_of_shares == 0):
+            order_target_percent(stock,1)
+        print "Stock is not tradable today" 
+    
+
+    record( net_worth =  netWorth)
